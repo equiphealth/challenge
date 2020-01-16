@@ -1,0 +1,14 @@
+{
+    "eslint.alwaysShowStatus": true,
+    "files.autoSave": "onFocusChange",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+      "**/*.js": { "when": "$(basename).ts" },
+      "**/*.jsx": { "when": "$(basename).tsx" },
+      "**/*.js.map": true
+    },
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  }
