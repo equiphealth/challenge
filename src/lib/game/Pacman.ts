@@ -50,8 +50,8 @@ class Pacman extends Item implements GameBoardItem {
     if (this.desiredMove) {    
       if (moves[this.desiredMove]) {
         move = {piece: moves[this.desiredMove], direction: GameDirectionMap[this.desiredMove]};
+        this.desiredMove = false;
       }
-      this.desiredMove = false;
     }
     
     // Otherwise, continue in the last direction
