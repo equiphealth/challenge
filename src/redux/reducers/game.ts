@@ -7,7 +7,7 @@ const initialState:GameState = {...InitializeGame(), runningScore: 0, iteration:
 
 const gameReducer = (state:GameState = initialState, action: ReduxAction): GameState => {
   const { items, GhostStore, PacmanStore, pillTimer} = state;
-  let { mode, runningScore, iteration, turn } = state;
+  let { mode, runningScore, iteration, turn, auto_game } = state;
 
   let newMove; let i;
 
@@ -16,27 +16,46 @@ const gameReducer = (state:GameState = initialState, action: ReduxAction): GameS
     case ActionTypes.INIT:
       runningScore += PacmanStore.score;
       iteration = (iteration || 0) + 1;
-      return {...InitializeGame(), runningScore, iteration};
+      auto_game = false;
+      return {...InitializeGame(), runningScore, iteration, auto_game};
+
+    case ActionTypes.INIT_AUTO:
+      runningScore += PacmanStore.score;
+      iteration = (iteration || 0) + 1;
+      auto_game = true;
+      return {...InitializeGame(), runningScore, iteration, auto_game};
 
     case ActionTypes.RESET:
       runningScore = 0;
       iteration = 0;
-      return {...InitializeGame(), runningScore, iteration};
+      return {...InitializeGame(), runningScore, iteration, auto_game};
 
     case ActionTypes.SET_ITEMS:
       return {...state, ...action.payload };
 
     case ActionTypes.TIC:
 
+      console.log("TIC: mode - " + mode + ", auto_game - " + auto_game);
       if (mode === GameMode.PLAYING) {
 
         turn += 1;
 
         // Move Pacman
-        newMove = PacmanStore.getNextMove();
+        if (auto_game){ // If the automatic game flag is set get the next automatic move.
+          newMove = PacmanStore.getNextAutoMove();
+        } else {
+          newMove = PacmanStore.getNextMove();
+        }
+        
         if (newMove) {
           if (items[newMove.piece.y][newMove.piece.x].type === GameBoardItemType.GHOST && pillTimer.timer === 0) {
-            mode = GameMode.FINISHED;
+            if (auto_game && (iteration || 0) < 100){
+              runningScore += PacmanStore.score;
+              iteration = (iteration || 0) + 1;  
+              return {...InitializeGame(), runningScore, iteration, auto_game};
+            } else {
+              mode = GameMode.FINISHED;
+            }
           } else {
             PacmanStore.move(newMove.piece, newMove.direction);
           }
@@ -52,7 +71,13 @@ const gameReducer = (state:GameState = initialState, action: ReduxAction): GameS
               if (items[newMove.piece.y][newMove.piece.x].type === GameBoardItemType.PACMAN) {
                 if (pillTimer.timer === 0) {
                   GhostStore[i].move(newMove.piece, newMove.direction);
-                  mode = GameMode.FINISHED;
+                  if (auto_game && (iteration || 0) < 100){
+                    runningScore += PacmanStore.score;
+                    iteration = (iteration || 0) + 1; 
+                    return {...InitializeGame(), runningScore, iteration, auto_game}; 
+                  } else {
+                    mode = GameMode.FINISHED;
+                  }
                 } else {
                   GhostStore[i].setDirection();
                 }

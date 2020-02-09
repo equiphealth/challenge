@@ -81,7 +81,8 @@ interface GameState {
   pillTimer: GameBoardItemTimer,
   turn: number,
   runningScore?: number,
-  iteration?: number
+  iteration?: number,
+  auto_game?: boolean
 }
 
 

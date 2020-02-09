@@ -67,6 +67,81 @@ class Pacman extends Item implements GameBoardItem {
   }
 
   /**
+   * Returns the next automatically generated move.  Algorithm is to
+   * calculate a score for each direction.  If the specified direction is behind
+   * pacman or there is a ghost in that direction then that is the lowest score (-1).  
+   * Walls have a score of 0, empty spaces 1, biscuit 2, and pill 3.  The
+   * direction that first gets the max score wins.  The directions are checked in 
+   * a random order to ensure pacman doesn't get stuck repeating the same moves over
+   * and over.
+   * 
+   * @method getNextAutoMove
+   * @return {GameBoardItemMove | boolean} Next move
+   */
+  getNextAutoMove(): GameBoardItemMove | boolean {
+
+    const { moves } = this.piece;
+    let desiredDirection = "";
+    let maxScore = 0;
+    let directions = ['up', 'down', 'left', 'right'];
+    let reverseDirections = ['down', 'up', 'right', 'left'];
+
+    
+    let currIdx = Math.floor(Math.random() * Math.floor(4));
+
+    if( moves !== undefined ){
+      for( let cnt = 0; cnt < 4; cnt++ ){
+        let currScore = this.getDirectionScore(directions[currIdx], reverseDirections[currIdx]); 
+        if( currScore > maxScore ) {
+          desiredDirection = directions[currIdx];
+          maxScore = currScore;
+        }
+        currIdx = (currIdx + 1) % 4;
+      }
+    }
+
+    if( desiredDirection !== "" ){
+      return {piece: moves[desiredDirection], direction: GameDirectionMap[desiredDirection]};;
+    }
+    
+    return false;
+  }
+
+  /**
+   * Gets the score for the specified direction
+   * 
+   * @method getDirectionScore()
+   * @return number The score for this direction
+   */
+  getDirectionScore( desiredDirection: string, reverseDirection: string ): number {
+
+    let currScore = -1;
+    const { moves } = this.piece;
+
+    // If the desired direction is not behind us 
+    if( this.direction !== GameDirectionMap[reverseDirection] ){
+      // If there is a move available in the desired direction
+      if( moves[desiredDirection] ){
+        let testMove = moves[desiredDirection];
+        // If the desired direction does not contain a ghost
+        if( this.items[testMove.y][testMove.x].type !== GameBoardItemType.GHOST ) {
+          currScore = 1
+        }
+        // And if it contains a biscuit increment again
+        if( this.items[testMove.y][testMove.x].type === GameBoardItemType.BISCUIT ) {
+          currScore = currScore+1;
+        }
+        // But if it contains a pill increment by 2
+        if( this.items[testMove.y][testMove.x].type === GameBoardItemType.PILL ) {
+          currScore = currScore+2;
+        }
+      }
+    }
+
+    return currScore;
+  }
+
+  /**
    * Move Pacman and "eat" the item
    * 
    * @method move
