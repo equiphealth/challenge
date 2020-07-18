@@ -1,20 +1,30 @@
-import { GameBoardItemType, GameBoardPieceType, GameMode, GhostColor } from './Map';
-import Ghost from './game/Ghost';
-import Pacman from './game/Pacman';
+import {
+  GameBoardItemType,
+  GameBoardPieceType,
+  GameMode,
+  GhostColor,
+} from "./Map";
+import Ghost from "./game/Ghost";
+import Pacman from "./game/Pacman";
 
 /** Enumerate the board pieces */
 enum gameMap {
-  WALL    = 0,
+  WALL = 0,
   BISCUIT = 1,
-  EMPTY   = 2,
-  GHOST   = 3,
-  PILL    = 4,
-  PACMAN  = 5,
-};
+  EMPTY = 2,
+  GHOST = 3,
+  PILL = 4,
+  PACMAN = 5,
+}
 
 /** Hold Ghost Colors */
-const GhostColorMap = [GhostColor.BLUE, GhostColor.ORANGE, GhostColor.RED, GhostColor.VIOLET];
-  
+const GhostColorMap = [
+  GhostColor.BLUE,
+  GhostColor.ORANGE,
+  GhostColor.RED,
+  GhostColor.VIOLET,
+];
+
 /** Holds the gameBoard state */
 const gameBoard = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -38,47 +48,49 @@ const gameBoard = [
   [0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
   [0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
   [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 /**
  * Create a list of possible moves from any position
- * 
+ *
  * @function GetPossibleMoves
- * 
+ *
  * @param number i Column position
  * @param number j Row position
  * @return {GameBoardPosition[]} Array of possible moves
  */
-const GetPossibleMoves = (i: number, j: number, layout: GameBoardPiece[][]):GameBoardItemMoves => {
-
+const GetPossibleMoves = (
+  i: number,
+  j: number,
+  layout: GameBoardPiece[][]
+): GameBoardItemMoves => {
   const height = layout.length;
-  const {length} = layout[0];
+  const { length } = layout[0];
 
-  const possibleMoves:GameBoardItemMoves = {};
+  const possibleMoves: GameBoardItemMoves = {};
 
   possibleMoves.up = layout[j === 0 ? height - 1 : j - 1][i];
   possibleMoves.down = layout[j === height - 1 ? 0 : j + 1][i];
   possibleMoves.left = layout[j][i === 0 ? length - 1 : i - 1];
   possibleMoves.right = layout[j][i === length - 1 ? 0 : i + 1];
 
-  Object.keys(possibleMoves).map(key => {
-    if (possibleMoves[key].type === GameBoardPieceType.WALL) delete possibleMoves[key];
+  Object.keys(possibleMoves).map((key) => {
+    if (possibleMoves[key].type === GameBoardPieceType.WALL)
+      delete possibleMoves[key];
     return true;
   });
-
   return possibleMoves;
 };
 
 /**
  * Convert move positions to pieces
- * 
+ *
  * @function ConvertMovesToPieces
- * 
+ *
  * @param {GameBoardPiece[][]} layout Total Board Layout
  */
 const ProcessLayout = (layout: GameBoardPiece[][]): GameBoardPiece[][] => {
-
   const newLayout = layout;
 
   for (let y = 0; y < layout.length; y += 1) {
@@ -86,42 +98,49 @@ const ProcessLayout = (layout: GameBoardPiece[][]): GameBoardPiece[][] => {
       newLayout[y][x].moves = GetPossibleMoves(x, y, layout);
     }
   }
-  
+
   return newLayout;
-  
 };
 
 /**
  * Convert a data array to game objects
- * 
+ *
  * @function InitializeGame
  * @return {GameState} Fresh Game to play on
  */
-const InitializeGame = (): GameState => {
-
+const InitializeGame = (playAuto = false): GameState => {
   let layout: GameBoardPiece[][] = [];
   const items: GameBoardItem[][] = [];
   const GhostStartPoints: GameBoardPiece[] = [];
   const GhostStore = [];
   let colorIdx = 0;
   const turn = 0;
-  const mode: GameMode = GameMode.PLAYING;
-  const pillTimer:GameBoardItemTimer = { timer: 0 };
-  const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
+  let mode: GameMode = GameMode.PLAYING;
+  if (playAuto) {
+    mode = GameMode.PLAYINGAUTO;
+  }
+  const pillTimer: GameBoardItemTimer = { timer: 0 };
+  const PacmanStore: Pacman = new Pacman(
+    { id: "DUMMY", x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {} },
+    items,
+    pillTimer
+  );
 
   for (let y = 0; y < gameBoard.length; y += 1) {
-
-    const layoutRow:GameBoardPiece[] = [];
-    const itemsRow:GameBoardItem[] = [];
+    const layoutRow: GameBoardPiece[] = [];
+    const itemsRow: GameBoardItem[] = [];
 
     for (let x = 0; x < gameBoard[y].length; x += 1) {
-
       const val = gameBoard[y][x];
       const id = `PIECE::${y}::${x}`;
 
-      let item:GameBoardItem = { type: GameBoardItemType.EMPTY };
-      const piece:GameBoardPiece = {
-        id, y, x, type: GameBoardPieceType.EMPTY, moves: {}
+      let item: GameBoardItem = { type: GameBoardItemType.EMPTY };
+      const piece: GameBoardPiece = {
+        id,
+        y,
+        x,
+        type: GameBoardPieceType.EMPTY,
+        moves: {},
       };
 
       switch (val) {
@@ -137,14 +156,21 @@ const InitializeGame = (): GameState => {
         case gameMap.PACMAN:
           PacmanStore.setPiece(piece);
           item = PacmanStore;
-          break;    
+          break;
         case gameMap.GHOST:
           GhostStartPoints.push(piece);
-          item = new Ghost(piece, items, pillTimer, GhostStartPoints, GhostColorMap[colorIdx]);
+          item = new Ghost(
+            piece,
+            items,
+            pillTimer,
+            GhostStartPoints,
+            GhostColorMap[colorIdx]
+          );
           colorIdx += 1;
           GhostStore.push(item);
-          break;             
-        default: break;
+          break;
+        default:
+          break;
       }
 
       layoutRow.push(piece);
@@ -157,7 +183,16 @@ const InitializeGame = (): GameState => {
 
   layout = ProcessLayout(layout);
 
-  return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer };
+  return {
+    mode,
+    turn,
+    GhostStartPoints,
+    layout,
+    items,
+    GhostStore,
+    PacmanStore,
+    pillTimer,
+  };
 };
 
 export { InitializeGame };

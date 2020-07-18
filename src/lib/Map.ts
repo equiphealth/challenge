@@ -1,4 +1,3 @@
-
 export enum GameDirection {
   UP = 0,
   DOWN = 1,
@@ -7,27 +6,31 @@ export enum GameDirection {
   NONE = 4,
 }
 
-export const KeyToGameDirection:KeyToGameDirection = {
-  W: 'up',
-  S: 'down',
-  A: 'left',
-  D: 'right',
+export const KeyToGameDirection: KeyToGameDirection = {
+  W: "up",
+  S: "down",
+  A: "left",
+  D: "right",
 };
 
 const GameDirectionToKeys = (direction: GameDirection): string => {
-
   switch (direction) {
-    case GameDirection.UP: return 'up';
-    case GameDirection.DOWN: return 'down';
-    case GameDirection.LEFT: return 'left';
-    case GameDirection.RIGHT: return 'right';
-    default: return 'none';
+    case GameDirection.UP:
+      return "up";
+    case GameDirection.DOWN:
+      return "down";
+    case GameDirection.LEFT:
+      return "left";
+    case GameDirection.RIGHT:
+      return "right";
+    default:
+      return "none";
   }
 };
 
 export { GameDirectionToKeys };
 
-export const GameDirectionMap:GameDirectionMap = {
+export const GameDirectionMap: GameDirectionMap = {
   up: GameDirection.UP,
   down: GameDirection.DOWN,
   left: GameDirection.LEFT,
@@ -35,19 +38,19 @@ export const GameDirectionMap:GameDirectionMap = {
   none: GameDirection.NONE,
 };
 
-export const GameDirectionReverseMap:GameDirectionMap = {
-  up: 'down',
-  down: 'up',
-  left: 'right',
-  right: 'left',
-  none: 'none',
+export const GameDirectionReverseMap: GameDirectionMap = {
+  up: "down",
+  down: "up",
+  left: "right",
+  right: "left",
+  none: "none",
 };
-    
+
 export enum GameBoardPieceType {
   WALL = 0,
   EMPTY = 1,
 }
-    
+
 export enum GameBoardItemType {
   EMPTY = 0,
   PACMAN = 1,
@@ -66,14 +69,15 @@ export enum GameBoardPieceDirection {
 export enum GameMode {
   WAITING = 0,
   PLAYING = 1,
-  FINISHED = 2  
+  FINISHED = 2,
+  PLAYINGAUTO = 3,
 }
 
 export enum GhostColor {
-  BLUE = '#00C',
-  ORANGE = '#C80',
-  RED = '#C00',
-  VIOLET = '#C08'
+  BLUE = "#00C",
+  ORANGE = "#C80",
+  RED = "#C00",
+  VIOLET = "#C08",
 }
 
 export const pillMax = 30;
