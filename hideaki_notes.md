@@ -16,7 +16,7 @@ Pacman is an extension of Item.
 Items have the properties:
 - this.piece = 1 (0 is WALL, 1 is NON WALL)
 - this.items 
-- this.pillTimer !!! Initialized to 0 for invincible state.
+
 1.
 
 
@@ -32,6 +32,7 @@ New Button
 
 1. set / clearInterval inside useEffect of controls to change tic speed for different game modes 
 2. TS object undefined error when using iteration state
+3. Proper implementation of TS with redux and react
 
 
 ## Issues

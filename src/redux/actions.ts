@@ -4,7 +4,6 @@ export enum ActionTypes {
   INIT = 2,
   RESET = 3,
   INIT_CHEAT = 4,
-
 }
 
 export const initGame = () => ({

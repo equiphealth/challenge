@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Controls: React.FC<ControlProps> = ({score, iteration, runningScore, dispatch}): JSX.Element => {
+  // ticSpeed state to change state based on game mode
   const [ticSpeed, setTicSpeed] = useState(250);
   const styles = useStyles({});
 
