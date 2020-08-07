@@ -1,6 +1,7 @@
 import { GameBoardItemType, GameBoardPieceType, GameMode, GhostColor } from './Map';
 import Ghost from './game/Ghost';
 import Pacman from './game/Pacman';
+import SuperPacman from './game/SuperPacman'
 
 /** Enumerate the board pieces */
 enum gameMap {
@@ -107,7 +108,8 @@ const InitializeGame = (): GameState => {
   const turn = 0;
   const mode: GameMode = GameMode.PLAYING;
   const pillTimer:GameBoardItemTimer = { timer: 0 };
-  const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
+  // const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
+  const PacmanStore: Pacman = new SuperPacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
 
   for (let y = 0; y < gameBoard.length; y += 1) {
 
