@@ -1,5 +1,5 @@
 import { ActionTypes } from '../actions';
-import { InitializeGame } from '../../lib/Game';
+import { InitializeGame, InitializeCheatGame } from '../../lib/Game';
 import { GameBoardItemType, GameMode } from '../../lib/Map';
 
 /** Holds initial state */
@@ -70,6 +70,11 @@ const gameReducer = (state:GameState = initialState, action: ReduxAction): GameS
 
       }
       return {...state, items, mode, turn };
+
+    case ActionTypes.INIT_CHEAT:
+      runningScore += PacmanStore.score;
+      iteration = (iteration || 0) + 1;
+      return {...InitializeCheatGame(), runningScore, iteration};
 
     default:
       return state;

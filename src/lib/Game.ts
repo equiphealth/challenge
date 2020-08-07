@@ -1,7 +1,7 @@
 import { GameBoardItemType, GameBoardPieceType, GameMode, GhostColor } from './Map';
 import Ghost from './game/Ghost';
 import Pacman from './game/Pacman';
-import SuperPacman from './game/SuperPacman'
+import SuperPacman from './game/SuperPacman';
 
 /** Enumerate the board pieces */
 enum gameMap {
@@ -107,7 +107,73 @@ const InitializeGame = (): GameState => {
   let colorIdx = 0;
   const turn = 0;
   const mode: GameMode = GameMode.PLAYING;
+  // change pillTimer to last forever.
   const pillTimer:GameBoardItemTimer = { timer: 0 };
+  const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
+
+
+  for (let y = 0; y < gameBoard.length; y += 1) {
+
+    const layoutRow:GameBoardPiece[] = [];
+    const itemsRow:GameBoardItem[] = [];
+
+    for (let x = 0; x < gameBoard[y].length; x += 1) {
+
+      const val = gameBoard[y][x];
+      const id = `PIECE::${y}::${x}`;
+
+      let item:GameBoardItem = { type: GameBoardItemType.EMPTY };
+      const piece:GameBoardPiece = {
+        id, y, x, type: GameBoardPieceType.EMPTY, moves: {}
+      };
+
+      switch (val) {
+        case gameMap.WALL:
+          piece.type = GameBoardPieceType.WALL;
+          break;
+        case gameMap.BISCUIT:
+          item = { type: GameBoardItemType.BISCUIT };
+          break;
+        case gameMap.PILL:
+          item = { type: GameBoardItemType.PILL };
+          break;
+        case gameMap.PACMAN:
+          PacmanStore.setPiece(piece);
+          item = PacmanStore;
+          break;    
+        case gameMap.GHOST:
+          GhostStartPoints.push(piece);
+          item = new Ghost(piece, items, pillTimer, GhostStartPoints, GhostColorMap[colorIdx]);
+          colorIdx += 1;
+          GhostStore.push(item);
+          break;             
+        default: break;
+      }
+
+      layoutRow.push(piece);
+      itemsRow.push(item);
+    }
+
+    layout.push(layoutRow);
+    items.push(itemsRow);
+  }
+
+  layout = ProcessLayout(layout);
+
+  return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer };
+};
+
+const InitializeCheatGame = (): GameState => {
+
+  let layout: GameBoardPiece[][] = [];
+  const items: GameBoardItem[][] = [];
+  const GhostStartPoints: GameBoardPiece[] = [];
+  const GhostStore = [];
+  let colorIdx = 0;
+  const turn = 0;
+  const mode: GameMode = GameMode.PLAYING;
+  // change pillTimer to last forever.
+  const pillTimer:GameBoardItemTimer = { timer: Infinity };
   // const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
   const PacmanStore: Pacman = new SuperPacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
 
@@ -162,6 +228,6 @@ const InitializeGame = (): GameState => {
   return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer };
 };
 
-export { InitializeGame };
+export { InitializeGame, InitializeCheatGame };
 
 export default InitializeGame;

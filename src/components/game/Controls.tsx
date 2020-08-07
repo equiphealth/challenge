@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import store from '../../redux/store';
-import { initGame, resetScore } from '../../redux/actions';
+import { initGame, resetScore, initCheatGame, tic } from '../../redux/actions';
 
 interface ControlProps {
   score?: number;
   iteration?: number;
   runningScore?: number;
+  dispatch: Function;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -22,16 +23,31 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const Controls: React.FC<ControlProps> = ({score, iteration, runningScore}): JSX.Element => {
-  
+const Controls: React.FC<ControlProps> = ({score, iteration, runningScore, dispatch}): JSX.Element => {
+  const [ticSpeed, setTicSpeed] = useState(250);
   const styles = useStyles({});
 
+  // use variable to setInterval so it can be cleared on unmount to go back to regular tick 250 after cheating
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(tic());
+    }, ticSpeed);
+    return () => clearInterval(interval);
+  }, [dispatch, ticSpeed]);
+
   const handleNewGame = ():void => {
+    setTicSpeed(250);
     store.dispatch(initGame());
   };
 
   const handleResetScore = ():void => {
+    setTicSpeed(250);
     store.dispatch(resetScore());
+  };
+
+  const handleCheatGame = ():void => {
+    setTicSpeed(100);
+    store.dispatch(initCheatGame());
   };
 
   return (
@@ -56,6 +72,7 @@ const Controls: React.FC<ControlProps> = ({score, iteration, runningScore}): JSX
 
       <Button onClick={handleNewGame} className={styles.button} fullWidth color="primary" variant="contained">New Game</Button>
       <Button onClick={handleResetScore} className={styles.button} fullWidth variant="contained">Reset Score</Button>
+      <Button onClick={handleCheatGame} className={styles.button} fullWidth variant="contained">Cheat</Button>
     </>
   );
 };
