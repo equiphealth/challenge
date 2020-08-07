@@ -34,6 +34,7 @@ const Controls: React.FC<ControlProps> = ({score, iteration, runningScore, dispa
     }, ticSpeed);
     return () => clearInterval(interval);
   }, [dispatch, ticSpeed]);
+  
 
   const handleNewGame = ():void => {
     setTicSpeed(250);

@@ -77,3 +77,9 @@ export enum GhostColor {
 }
 
 export const pillMax = 30;
+
+export enum CheatMode {
+  OFF = 0,
+  ON = 1,
+  SUPER = 2
+}

@@ -1,3 +1,5 @@
+
+
 interface GameBoardItemMove {
   piece: GameBoardPiece,
   direction?: GameDirection
@@ -81,7 +83,8 @@ interface GameState {
   pillTimer: GameBoardItemTimer,
   turn: number,
   runningScore?: number,
-  iteration?: number
+  iteration?: number,
+  cheatMode: CheatMode
 }
 
 

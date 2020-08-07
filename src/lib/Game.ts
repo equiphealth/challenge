@@ -1,4 +1,4 @@
-import { GameBoardItemType, GameBoardPieceType, GameMode, GhostColor } from './Map';
+import { GameBoardItemType, GameBoardPieceType, GameMode, GhostColor, CheatMode } from './Map';
 import Ghost from './game/Ghost';
 import Pacman from './game/Pacman';
 import SuperPacman from './game/SuperPacman';
@@ -107,6 +107,7 @@ const InitializeGame = (): GameState => {
   let colorIdx = 0;
   const turn = 0;
   const mode: GameMode = GameMode.PLAYING;
+  const cheatMode: CheatMode = CheatMode.OFF;
   // change pillTimer to last forever.
   const pillTimer:GameBoardItemTimer = { timer: 0 };
   const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
@@ -160,9 +161,10 @@ const InitializeGame = (): GameState => {
 
   layout = ProcessLayout(layout);
 
-  return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer };
+  return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer, cheatMode };
 };
 
+// only difference from regular game is const pillTimer and PacmanStore
 const InitializeCheatGame = (): GameState => {
 
   let layout: GameBoardPiece[][] = [];
@@ -172,6 +174,7 @@ const InitializeCheatGame = (): GameState => {
   let colorIdx = 0;
   const turn = 0;
   const mode: GameMode = GameMode.PLAYING;
+  const cheatMode: CheatMode = CheatMode.ON;
   // change pillTimer to last forever.
   const pillTimer:GameBoardItemTimer = { timer: Infinity };
   // const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
@@ -225,7 +228,7 @@ const InitializeCheatGame = (): GameState => {
 
   layout = ProcessLayout(layout);
 
-  return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer };
+  return { mode, turn, GhostStartPoints, layout, items, GhostStore, PacmanStore, pillTimer, cheatMode };
 };
 
 export { InitializeGame, InitializeCheatGame };

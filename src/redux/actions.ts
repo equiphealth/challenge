@@ -3,7 +3,8 @@ export enum ActionTypes {
   TIC = 1,
   INIT = 2,
   RESET = 3,
-  INIT_CHEAT = 4
+  INIT_CHEAT = 4,
+
 }
 
 export const initGame = () => ({
@@ -32,3 +33,4 @@ export const initCheatGame = () => ({
   type: ActionTypes.INIT_CHEAT,
   payload: {}
 });
+

@@ -27,7 +27,8 @@
       "react/forbid-prop-types": "off",
       "react/prop-types" : "off",
       "spaced-comment": "off",
-      "no-restricted-syntax" : "off"
+      "no-restricted-syntax" : "off",
+      "import/no-extraneous-dependencies" : "off"
     },
     "settings": {
       "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
