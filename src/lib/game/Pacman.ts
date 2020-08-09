@@ -1,4 +1,4 @@
-import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax } from '../Map';
+import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax, GameDirectionReverseMap} from '../Map';
 import Item from './Item';
 
 class Pacman extends Item implements GameBoardItem {
@@ -63,6 +63,57 @@ class Pacman extends Item implements GameBoardItem {
     }
 
     return move;
+
+  }
+ /**
+   * Returns the next move from the keyboard input
+   * 
+   * @method getAutoMove
+   * @return {GameBoardItemMove | boolean} Next move
+   */
+
+  getAutoMove(): GameBoardItemMove | boolean {
+    const { moves } = this.piece;
+
+    let dangerSeen:boolean = false;
+
+    let reversePiece:GameBoardPiece = this.piece;
+    let reverseDirection:string = GameDirectionMap[this.direction];
+
+    const newMoves:GameBoardItemMoves = {};
+
+    for (const idx in moves) {
+      if (idx) {
+        const move = moves[idx];
+        const ghost = GameBoardItemType.GHOST;
+        const type = this.items[move.y][move.x].type;
+        let dangerAhead = false;
+        if (type === ghost) {
+          dangerAhead = true;
+          dangerSeen = true ;
+
+          // If there is no danger ahead, and we aren't going backwards
+         }
+          if (!dangerAhead && GameDirectionMap[GameDirectionReverseMap[idx]] !== this.direction) {
+            newMoves[idx] = move;
+          } else if (GameDirectionMap[GameDirectionReverseMap[idx]] === this.direction) {
+            reversePiece = move;
+            reverseDirection = idx;
+          }
+        }
+      }
+
+    if (dangerSeen) {
+      newMoves[reverseDirection] = reversePiece;
+    }
+
+    const newMovesIdx = Object.keys(newMoves);
+
+    if (newMovesIdx.length < 1) return false;
+
+    const move = Math.floor(Math.random() * newMovesIdx.length);
+
+    return {piece: newMoves[newMovesIdx[move]], direction: GameDirectionMap[newMovesIdx[move]]};
 
   }
 

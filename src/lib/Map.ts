@@ -66,7 +66,8 @@ export enum GameBoardPieceDirection {
 export enum GameMode {
   WAITING = 0,
   PLAYING = 1,
-  FINISHED = 2  
+  FINISHED = 2,
+  AUTO = 3,
 }
 
 export enum GhostColor {

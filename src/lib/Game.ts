@@ -97,7 +97,7 @@ const ProcessLayout = (layout: GameBoardPiece[][]): GameBoardPiece[][] => {
  * @function InitializeGame
  * @return {GameState} Fresh Game to play on
  */
-const InitializeGame = (): GameState => {
+const InitializeGame = (AutoPlay = false): GameState => {
 
   let layout: GameBoardPiece[][] = [];
   const items: GameBoardItem[][] = [];
@@ -105,10 +105,13 @@ const InitializeGame = (): GameState => {
   const GhostStore = [];
   let colorIdx = 0;
   const turn = 0;
-  const mode: GameMode = GameMode.PLAYING;
+  let mode: GameMode = GameMode.PLAYING;
   const pillTimer:GameBoardItemTimer = { timer: 0 };
   const PacmanStore: Pacman = new Pacman({id: 'DUMMY', x: 0, y: 0, type: GameBoardPieceType.EMPTY, moves: {}}, items, pillTimer);
 
+  if (AutoPlay) {
+    mode = GameMode.AUTO;
+  }
   for (let y = 0; y < gameBoard.length; y += 1) {
 
     const layoutRow:GameBoardPiece[] = [];

@@ -2,8 +2,14 @@ export enum ActionTypes {
   SET_ITEMS = 0,
   TIC = 1,
   INIT = 2,
-  RESET = 3
+  RESET = 3,
+  AUTO = 4
 }
+
+export const autoGame = () => ({
+  type: ActionTypes.AUTO,
+  payload: {}
+});
 
 export const initGame = () => ({
   type: ActionTypes.INIT,
@@ -26,3 +32,4 @@ export const tic = () => ({
   type: ActionTypes.TIC,
   payload: {}
 });
+
