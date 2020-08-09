@@ -4,7 +4,6 @@ import { Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import store from '../../redux/store';
 import { initGame, resetScore, autoGame } from '../../redux/actions';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 interface ControlProps {
   score?: number;
