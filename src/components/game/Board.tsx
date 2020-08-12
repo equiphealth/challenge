@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Wall, Empty } from './pieces';
-import { GameBoardPieceType } from '../../lib/Map';
+import { GameBoardPieceType} from '../../lib/Map';
 
 interface BoardProps {
   boardState?: GameBoardPiece[][];

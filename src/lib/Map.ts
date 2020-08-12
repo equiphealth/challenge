@@ -14,6 +14,13 @@ export const KeyToGameDirection:KeyToGameDirection = {
   D: 'right',
 };
 
+export const KeyToGameDirection2:KeyToGameDirection2 = {
+  I: 'up',
+  K: 'down',
+  J: 'left',
+  L: 'right',
+};
+
 const GameDirectionToKeys = (direction: GameDirection): string => {
 
   switch (direction) {
@@ -51,6 +58,7 @@ export enum GameBoardPieceType {
 export enum GameBoardItemType {
   EMPTY = 0,
   PACMAN = 1,
+  PACMAN2 = 2,
   BISCUIT = 10,
   PILL = 100,
   GHOST = 200,
@@ -69,6 +77,12 @@ export enum GameMode {
   FINISHED = 2,
   AUTO = 3,
 }
+
+export enum GameSetUp {
+  TWO_PLAYERS = 0,
+  ONE_PLAYER = 1
+}
+
 
 export enum GhostColor {
   BLUE = '#00C',

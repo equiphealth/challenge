@@ -59,6 +59,9 @@ interface KeyToGameDirection {
   [any: string]: string,
 }
 
+interface KeyToGameDirection2 {
+  [any: string]: string,
+}
 interface GameDirectionToKeys {
   [any: GameDirection]: string,
 }
@@ -70,18 +73,21 @@ interface GameBoardPiece {
   y: number,
   moves: GameBoardItemMoves,
 }
-  
+
 interface GameState {
   items: GameBoardItem[][],
   layout: GameBoardPiece[][],
   GhostStore: Ghost[],
   PacmanStore: Pacman,
+  PacmanStore2: Pacman2,
   GhostStartPoints: GameBoardPiece[],
   mode: GameMode,
   pillTimer: GameBoardItemTimer,
   turn: number,
   runningScore?: number,
-  iteration?: number
+  runningScore2?: number,
+  iteration?: number,
+  setup: GameSetUp,
 }
 
 
