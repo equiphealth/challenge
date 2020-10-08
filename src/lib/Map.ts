@@ -27,6 +27,19 @@ const GameDirectionToKeys = (direction: GameDirection): string => {
 
 export { GameDirectionToKeys };
 
+const ReverseGameDirectionToKeys = (direction: GameDirection): string => {
+
+  switch (direction) {
+    case GameDirection.UP: return 'down';
+    case GameDirection.DOWN: return 'up';
+    case GameDirection.LEFT: return 'right';
+    case GameDirection.RIGHT: return 'left';
+    default: return 'none';
+  }
+};
+
+export { ReverseGameDirectionToKeys };
+
 export const GameDirectionMap:GameDirectionMap = {
   up: GameDirection.UP,
   down: GameDirection.DOWN,
