@@ -1,5 +1,7 @@
 import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax } from '../Map';
+import DecisionTree from '../DecisionTree/DecisionTree';
 import Item from './Item';
+import Game from '../../components/game';
 
 class Pacman extends Item implements GameBoardItem {
 
@@ -8,6 +10,11 @@ class Pacman extends Item implements GameBoardItem {
   desiredMove: string | false = false;
 
   score:number = 0;
+
+  automate:boolean = false;
+  automateMoves:number = 100;
+
+  decisionTree:DecisionTree;
 
   constructor(piece:GameBoardPiece, items:GameBoardItem[][], pillTimer:GameBoardItemTimer) {
     super(piece, items, pillTimer);
@@ -18,6 +25,7 @@ class Pacman extends Item implements GameBoardItem {
     // Add a listener for keypresses for this object
     window.addEventListener('keypress', this.handleKeyPress, false);
 
+    this.decisionTree = new DecisionTree(this);
   }
 
   /**
@@ -32,6 +40,14 @@ class Pacman extends Item implements GameBoardItem {
       this.desiredMove = KeyToGameDirection[e.key.toUpperCase()];
     }
 
+    if (e.key.toUpperCase() == 'Q') {
+      if(this.automate){
+        this.automate = false;
+      }else{
+        this.automateMoves = 100;
+        this.automate = true;
+      }
+    }
   }
   
   /**
@@ -46,7 +62,7 @@ class Pacman extends Item implements GameBoardItem {
 
     let move: GameBoardItemMove | false = false;
 
-    // If there is a keyboard move, use it and clear it
+    // // If there is a keyboard move, use it and clear it
     if (this.desiredMove) {    
       if (moves[this.desiredMove]) {
         move = {piece: moves[this.desiredMove], direction: GameDirectionMap[this.desiredMove]};
@@ -60,10 +76,21 @@ class Pacman extends Item implements GameBoardItem {
       if (moves[key]) {
         move = {piece: moves[key], direction: this.direction};
       }
+    }    
+
+    //IF AI IS ON
+    //If we are stopped (at a wall or start) pick random direction
+    if(this.automate && this.automateMoves > 0)
+    {
+      if(this.direction == GameDirection.NONE) {
+        move = {piece: this.piece, direction: Math.floor(Math.random() * 4)};
+      }else{
+        move = this.decisionTree.getMove();
+      }
+      this.automateMoves--;
     }
 
     return move;
-
   }
 
   /**
