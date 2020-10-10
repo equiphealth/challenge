@@ -1,15 +1,15 @@
-import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax } from '../Map';
+import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax, GameMode } from '../Map';
 import Item from './Item';
 
 class Pacman extends Item implements GameBoardItem {
 
-  type:GameBoardItemType = GameBoardItemType.PACMAN;
+  type: GameBoardItemType = GameBoardItemType.PACMAN;
 
   desiredMove: string | false = false;
 
-  score:number = 0;
+  score: number = 0;
 
-  constructor(piece:GameBoardPiece, items:GameBoardItem[][], pillTimer:GameBoardItemTimer) {
+  constructor(piece: GameBoardPiece, items: GameBoardItem[][], pillTimer: GameBoardItemTimer) {
     super(piece, items, pillTimer);
 
     // Bind context for callback events
@@ -31,9 +31,11 @@ class Pacman extends Item implements GameBoardItem {
     if (KeyToGameDirection[e.key.toUpperCase()]) {
       this.desiredMove = KeyToGameDirection[e.key.toUpperCase()];
     }
-
+    if (e.key.toUpperCase() === 'R') {
+      this.run();
+    }
   }
-  
+
   /**
    * Returns the next move from the keyboard input
    * 
@@ -47,18 +49,18 @@ class Pacman extends Item implements GameBoardItem {
     let move: GameBoardItemMove | false = false;
 
     // If there is a keyboard move, use it and clear it
-    if (this.desiredMove) {    
+    if (this.desiredMove) {
       if (moves[this.desiredMove]) {
-        move = {piece: moves[this.desiredMove], direction: GameDirectionMap[this.desiredMove]};
+        move = { piece: moves[this.desiredMove], direction: GameDirectionMap[this.desiredMove] };
         this.desiredMove = false;
       }
     }
-    
+
     // Otherwise, continue in the last direction
     if (!move && this.direction !== GameDirection.NONE) {
       const key = GameDirectionToKeys(this.direction);
       if (moves[key]) {
-        move = {piece: moves[key], direction: this.direction};
+        move = { piece: moves[key], direction: this.direction };
       }
     }
 
@@ -73,12 +75,12 @@ class Pacman extends Item implements GameBoardItem {
    * @param {GameBoardPiece} piece 
    * @param {GameDirection} direction 
    */
-  move(piece: GameBoardPiece, direction: GameDirection):void {
+  move(piece: GameBoardPiece, direction: GameDirection): void {
 
     const item = this.items[piece.y][piece.x];
     if (typeof item !== 'undefined') {
       this.score += item.type;
-      switch(item.type) {
+      switch (item.type) {
         case GameBoardItemType.PILL:
           this.pillTimer.timer = pillMax;
           break;
@@ -96,6 +98,56 @@ class Pacman extends Item implements GameBoardItem {
     this.items[piece.y][piece.x] = this;
   }
 
+  /**
+   * Run the maze
+   * 
+   * @method run
+   */
+  run(): void {
+    alert('PRESSED RUN');
+
+    let timesRun = 0;
+    while (timesRun < 100) {
+
+
+      alert('Times Run: ' + timesRun);
+      timesRun++
+    }
+
+  }
+  /**
+   * Decide on move
+   * @method decision
+   */
+  decision() {
+    // moves piece can see
+    const { moves } = this.piece;
+    // to hold possible moves
+    const possibleMoves = {}
+
+    // logic variables
+    let ghostSeen = false;
+    let pillSeen = false;
+    let fruitSeen = false;
+    let DANGEROUS = false;
+
+    // for fleeing
+    let reversePiece = this.piece
+    let reverseDirection = GameDirectionMap[this.direction]
+
+    // for move in moves
+    for (let move in moves) {
+      // if move exists
+      if (move) {
+        // direction from move list
+        const direction = moves[move]
+        // GHOST DETECTION
+        if (this.items[direction.y][direction.x].type === GameBoardItemType.GHOST) {
+          ghostSeen = true;
+        }
+      }
+    }
+  }
 }
 
 export default Pacman;
