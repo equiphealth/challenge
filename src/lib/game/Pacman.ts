@@ -81,6 +81,8 @@ class Pacman extends Item implements GameBoardItem {
     if (this.running) {
       if (this.timesRun < 100) {
         move = this.pathFind();
+      } else if (this.timesRun >= 100) {
+        alert('100 iterations!')
       }
       this.timesRun++;
     }
@@ -192,6 +194,7 @@ class Pacman extends Item implements GameBoardItem {
       }
     }
 
+    // Ghost Evasion Protocol
     if (ghostSeen && ghostDir && !DANGEROUS) {
       console.log(possibleMoves);
       console.log('GHOST DETECTED: ' + ghostDir);
