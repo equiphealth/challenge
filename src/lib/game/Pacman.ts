@@ -79,12 +79,12 @@ class Pacman extends Item implements GameBoardItem {
     // if PacMan is RUNNING
     if (this.running) {
       if (this.timesRun < 100) {
-        move = this.decision()
-        console.log(move)
+        move = this.pathFind()
       }
       this.timesRun++
     }
-
+    console.log('Move: ' + move)
+    console.log('Times Run: ' + this.timesRun)
     return move;
 
   }
@@ -120,72 +120,67 @@ class Pacman extends Item implements GameBoardItem {
   }
 
   /**
-   * Run the maze
-   * 
-   * method run
-  //  */
-  // run(): void {
-  //   console.log('PRESSED RUN');
-
-  //   let timesRun = 0;
-  //   while (timesRun < 100) {
-  //     this.decision()
-  //     console.log(`Times Run: ${timesRun}`);
-  //     timesRun++;
-  //   }
-
-  // }
-
-  /**
-   * Decide on move
-   * @method decision
+   * Traverse the maze:
+   * Avoid ghosts
+   * Eat Biscuits
+   * Eat pills - become DANGEROUS
+   * If DANGEROUS, hunt ghosts
+   * @method pathFind
    */
-  decision() {
+  pathFind() {
+    // which way is Pac looking?
+    const facing = GameDirectionToKeys(this.direction)
     // moves piece can see
     const { moves } = this.piece;
-    console.log(moves)
     // to hold possible moves
     const possibleMoves: GameBoardItemMoves = {};
 
     // logic variables
     let ghostSeen = false;
-    const pillSeen = false;
-    const fruitSeen = false;
-    const DANGEROUS = false;
+    let biscuitSeen = false;
+    let pillSeen = false;
+    let emptySpace = false;
+    let DANGEROUS = false;
 
     // for fleeing
     const reversePiece = this.piece;
     const reverseDirection = GameDirectionMap[this.direction];
+
+    // Looking around
     for (const num in moves) {
       if (num) {
         const move = moves[num]
-
-        possibleMoves[num] = move
+        //Look for biscuits
+        let biscuit = this.findItem(num, GameBoardItemType.BISCUIT)
+        if (biscuit) {
+          biscuitSeen = true
+          // Chase the biscuit
+          return { piece: move, direction: GameDirectionMap[num] }
+        }
+        //Look for ghosts
+        let ghost = this.findItem(num, GameBoardItemType.GHOST)
+        if (ghost) {
+          ghostSeen = true
+        }
+        //Look for pill
+        let pill = this.findItem(num, GameBoardItemType.PILL)
+        if (pill) {
+          pillSeen = true
+          // Chase the pill
+          return { piece: move, direction: GameDirectionMap[num] }
+        }
+        //If empty
+        let empty = this.findItem(num, GameBoardItemType.EMPTY)
+        if (empty) {
+          emptySpace = true
+        }
       }
     }
-    // // for move in moves
-    // for (const num in moves) {
-    //   // if move exists
-    //   if (num) {
-    //     // direction from move list
-    //     const move = moves[num];
-    //     // GHOST DETECTION
-    //     if (this.items[move.y][move.x].type === GameBoardItemType.GHOST) {
-    //       ghostSeen = true;
-    //       //flee if not dangerous
-    //       if (!DANGEROUS) {
-    //         possibleMoves[reverseDirection] = reversePiece;
-    //       }
-    //       //pursue if dangerous
-    //       //if(DANGEROUS) {
-    //       //pursuit code
-    //       //}
-    //     }
-    //   }
-    // }
+
     const nextMoves = Object.keys(possibleMoves);
-    console.log(nextMoves)
+
     if (nextMoves.length < 1) return false;
+
     const move = Math.floor(Math.random() * nextMoves.length);
     return { piece: possibleMoves[nextMoves[move]], direction: GameDirectionMap[nextMoves[move]] }
   }
