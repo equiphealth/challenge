@@ -170,20 +170,22 @@ class Pacman extends Item implements GameBoardItem {
         let pill = this.findItem(num, GameBoardItemType.PILL);
         if (pill) {
           pillSeen = true;
-          // Chase the pill
-          return { piece: move, direction: GameDirectionMap[num] };
+          // Add pill room to possible moves
+          possibleMoves[num] = move
         }
         //If empty
         let empty = this.findItem(num, GameBoardItemType.EMPTY);
         if (empty) {
           emptySpace = true;
-          possibleMoves[num] = move;
+          // Ignore
         }
       }
     }
 
     if (ghostSeen) {
-      possibleMoves[reverseDirection] = reversePiece;
+      console.log('GHOST DETECTED')
+      // Evasion Logic
+      // possibleMoves[reverseDirection] = reversePiece;
     }
 
     const nextMoves = Object.keys(possibleMoves);
