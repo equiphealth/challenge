@@ -136,8 +136,6 @@ class Pacman extends Item implements GameBoardItem {
     const behind = GameDirectionMap[GameDirectionReverseMap[facing]]
     // moves piece can see
     const { moves } = this.piece;
-    // Remove remove behind pacman from view because he can't see behind him
-    delete moves[behind];
     // to hold possible moves
     const possibleMoves: GameBoardItemMoves = {};
 
@@ -157,36 +155,39 @@ class Pacman extends Item implements GameBoardItem {
     for (const dir in moves) {
       if (dir) {
         const move = moves[dir];
-        //Look for ghosts
-        let ghost = this.findItem(dir, GameBoardItemType.GHOST);
-        if (ghost) {
-          ghostSeen = true;
-          ghostDir = dir;
-          // If DANGEROUS
-          if (DANGEROUS) {
-            // EAT AND GROW FAT
+        // Following condition disables PacMan from looking behind him
+        if (GameDirectionMap[GameDirectionReverseMap[dir]] !== facing) {
+          //Look for ghosts
+          let ghost = this.findItem(dir, GameBoardItemType.GHOST);
+          if (ghost) {
+            ghostSeen = true;
+            ghostDir = dir;
+            // If DANGEROUS
+            if (DANGEROUS) {
+              // EAT AND GROW FAT
+              return { piece: move, direction: GameDirectionMap[dir] }
+            }
+          }
+          //Look for biscuits
+          let biscuit = this.findItem(dir, GameBoardItemType.BISCUIT);
+          if (biscuit) {
+            biscuitSeen = true;
+            // Add biscuit room to possible moves
+            possibleMoves[dir] = move
+          }
+          //Look for pill
+          let pill = this.findItem(dir, GameBoardItemType.PILL);
+          if (pill) {
+            pillSeen = true;
+            // Eat pill and become DANGEROUS
             return { piece: move, direction: GameDirectionMap[dir] }
           }
-        }
-        //Look for biscuits
-        let biscuit = this.findItem(dir, GameBoardItemType.BISCUIT);
-        if (biscuit) {
-          biscuitSeen = true;
-          // Add biscuit room to possible moves
-          possibleMoves[dir] = move
-        }
-        //Look for pill
-        let pill = this.findItem(dir, GameBoardItemType.PILL);
-        if (pill) {
-          pillSeen = true;
-          // Eat pill and become DANGEROUS
-          return { piece: move, direction: GameDirectionMap[dir] }
-        }
-        //If empty
-        let empty = this.findItem(dir, GameBoardItemType.EMPTY);
-        if (empty) {
-          emptySpace = true;
-          possibleMoves[dir] = move
+          //If empty
+          let empty = this.findItem(dir, GameBoardItemType.EMPTY);
+          if (empty) {
+            emptySpace = true;
+            possibleMoves[dir] = move
+          }
         }
       }
     }
