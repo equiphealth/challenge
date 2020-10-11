@@ -156,8 +156,8 @@ class Pacman extends Item implements GameBoardItem {
         let ghost = this.findItem(num, GameBoardItemType.GHOST);
         if (ghost) {
           ghostSeen = true;
-          reversePiece = move;
-          reverseDirection = num;
+          // Evade ghosts
+          // Logic goes here
         }
         //Look for biscuits
         let biscuit = this.findItem(num, GameBoardItemType.BISCUIT);
