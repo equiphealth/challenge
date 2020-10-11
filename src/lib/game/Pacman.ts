@@ -152,19 +152,19 @@ class Pacman extends Item implements GameBoardItem {
     for (const num in moves) {
       if (num) {
         const move = moves[num];
-        //Look for biscuits
-        let biscuit = this.findItem(num, GameBoardItemType.BISCUIT);
-        if (biscuit) {
-          biscuitSeen = true;
-          // Add biscuit room to possible moves
-          possibleMoves[num] = move
-        }
         //Look for ghosts
         let ghost = this.findItem(num, GameBoardItemType.GHOST);
         if (ghost) {
           ghostSeen = true;
           reversePiece = move;
           reverseDirection = num;
+        }
+        //Look for biscuits
+        let biscuit = this.findItem(num, GameBoardItemType.BISCUIT);
+        if (biscuit) {
+          biscuitSeen = true;
+          // Add biscuit room to possible moves
+          possibleMoves[num] = move
         }
         //Look for pill
         let pill = this.findItem(num, GameBoardItemType.PILL);
