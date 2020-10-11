@@ -20,3 +20,8 @@ Currently pacman uses [A, S, W, D] keys for moving.
 - Do not alter the Ghosts' behavior
 - Do not alter the scoring rules
 - Be creative
+
+## Ian Bryant : Submission
+- PacMan R(eal)U(ltimate)N(avigation)
+- Press 'r' to start/stop PacMan RUNner
+- Will move 100 turns or until death, whichever comes first

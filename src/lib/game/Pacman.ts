@@ -75,11 +75,11 @@ class Pacman extends Item implements GameBoardItem {
 
     // if PacMan is RUNNING
     if (this.running) {
-      if (timesRun < 100) {
+      if (this.timesRun < 100) {
         move = this.decision()
         console.log(move)
       }
-      timesRun++
+      this.timesRun++
     }
 
     return move;
