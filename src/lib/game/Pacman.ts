@@ -173,6 +173,7 @@ class Pacman extends Item implements GameBoardItem {
         let empty = this.findItem(num, GameBoardItemType.EMPTY)
         if (empty) {
           emptySpace = true
+          possibleMoves[num] = move
         }
       }
     }
