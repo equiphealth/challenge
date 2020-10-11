@@ -83,7 +83,9 @@ class Pacman extends Item implements GameBoardItem {
       }
       this.timesRun++;
     }
-    console.log('Move: ' + move);
+    if (move) {
+      console.log('Move: ' + move['direction'])
+    }
     console.log('Times Run: ' + this.timesRun);
     return move;
 
@@ -154,8 +156,8 @@ class Pacman extends Item implements GameBoardItem {
         let biscuit = this.findItem(num, GameBoardItemType.BISCUIT);
         if (biscuit) {
           biscuitSeen = true;
-          // Chase the biscuit
-          return { piece: move, direction: GameDirectionMap[num] };
+          // Add biscuit room to possible moves
+          possibleMoves[num] = move
         }
         //Look for ghosts
         let ghost = this.findItem(num, GameBoardItemType.GHOST);
