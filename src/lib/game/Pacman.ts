@@ -9,9 +9,9 @@ class Pacman extends Item implements GameBoardItem {
 
   score: number = 0;
 
-  running: boolean = false
+  running: boolean = false;
 
-  timesRun: number = 0
+  timesRun: number = 0;
 
   constructor(piece: GameBoardPiece, items: GameBoardItem[][], pillTimer: GameBoardItemTimer) {
     super(piece, items, pillTimer);
@@ -38,12 +38,12 @@ class Pacman extends Item implements GameBoardItem {
     if (e.key.toUpperCase() === 'R') {
       // if running, deactivate
       if (this.running) {
-        this.running = false
+        this.running = false;
       }
       // activate and reset counter
       else {
-        this.running = true
-        this.timesRun = 0
+        this.running = true;
+        this.timesRun = 0;
       }
     }
   }
@@ -79,12 +79,12 @@ class Pacman extends Item implements GameBoardItem {
     // if PacMan is RUNNING
     if (this.running) {
       if (this.timesRun < 100) {
-        move = this.pathFind()
+        move = this.pathFind();
       }
-      this.timesRun++
+      this.timesRun++;
     }
-    console.log('Move: ' + move)
-    console.log('Times Run: ' + this.timesRun)
+    console.log('Move: ' + move);
+    console.log('Times Run: ' + this.timesRun);
     return move;
 
   }
@@ -129,7 +129,7 @@ class Pacman extends Item implements GameBoardItem {
    */
   pathFind() {
     // which way is Pac looking?
-    const facing = GameDirectionToKeys(this.direction)
+    const facing = GameDirectionToKeys(this.direction);
     // moves piece can see
     const { moves } = this.piece;
     // to hold possible moves
@@ -143,39 +143,45 @@ class Pacman extends Item implements GameBoardItem {
     let DANGEROUS = false;
 
     // for fleeing
-    const reversePiece = this.piece;
-    const reverseDirection = GameDirectionMap[this.direction];
+    let reversePiece = this.piece;
+    let reverseDirection = GameDirectionMap[this.direction];
 
     // Looking around
     for (const num in moves) {
       if (num) {
-        const move = moves[num]
+        const move = moves[num];
         //Look for biscuits
-        let biscuit = this.findItem(num, GameBoardItemType.BISCUIT)
+        let biscuit = this.findItem(num, GameBoardItemType.BISCUIT);
         if (biscuit) {
-          biscuitSeen = true
+          biscuitSeen = true;
           // Chase the biscuit
-          return { piece: move, direction: GameDirectionMap[num] }
+          return { piece: move, direction: GameDirectionMap[num] };
         }
         //Look for ghosts
-        let ghost = this.findItem(num, GameBoardItemType.GHOST)
+        let ghost = this.findItem(num, GameBoardItemType.GHOST);
         if (ghost) {
-          ghostSeen = true
+          ghostSeen = true;
+          reversePiece = move;
+          reverseDirection = num;
         }
         //Look for pill
-        let pill = this.findItem(num, GameBoardItemType.PILL)
+        let pill = this.findItem(num, GameBoardItemType.PILL);
         if (pill) {
-          pillSeen = true
+          pillSeen = true;
           // Chase the pill
-          return { piece: move, direction: GameDirectionMap[num] }
+          return { piece: move, direction: GameDirectionMap[num] };
         }
         //If empty
-        let empty = this.findItem(num, GameBoardItemType.EMPTY)
+        let empty = this.findItem(num, GameBoardItemType.EMPTY);
         if (empty) {
-          emptySpace = true
-          possibleMoves[num] = move
+          emptySpace = true;
+          possibleMoves[num] = move;
         }
       }
+    }
+
+    if (ghostSeen) {
+      possibleMoves[reverseDirection] = reversePiece;
     }
 
     const nextMoves = Object.keys(possibleMoves);
@@ -183,7 +189,7 @@ class Pacman extends Item implements GameBoardItem {
     if (nextMoves.length < 1) return false;
 
     const move = Math.floor(Math.random() * nextMoves.length);
-    return { piece: possibleMoves[nextMoves[move]], direction: GameDirectionMap[nextMoves[move]] }
+    return { piece: possibleMoves[nextMoves[move]], direction: GameDirectionMap[nextMoves[move]] };
   }
 }
 
