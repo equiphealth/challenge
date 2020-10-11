@@ -11,6 +11,8 @@ class Pacman extends Item implements GameBoardItem {
 
   running: boolean = false
 
+  timesRun: number = 0
+
   constructor(piece: GameBoardPiece, items: GameBoardItem[][], pillTimer: GameBoardItemTimer) {
     super(piece, items, pillTimer);
 
@@ -73,11 +75,11 @@ class Pacman extends Item implements GameBoardItem {
 
     // if PacMan is RUNNING
     if (this.running) {
-      let timesRun = 0
       if (timesRun < 100) {
         move = this.decision()
-        timesRun++
+        console.log(move)
       }
+      timesRun++
     }
 
     return move;
