@@ -1,4 +1,5 @@
-import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax, GameMode } from '../Map';
+import { ArrowDownward } from '@material-ui/icons';
+import { GameBoardItemType, KeyToGameDirection, GameDirectionMap, GameDirectionToKeys, GameDirection, pillMax, GameMode, GameDirectionReverseMap } from '../Map';
 import Item from './Item';
 
 class Pacman extends Item implements GameBoardItem {
@@ -131,61 +132,70 @@ class Pacman extends Item implements GameBoardItem {
    */
   pathFind() {
     // which way is Pac looking?
-    const facing = GameDirectionToKeys(this.direction);
+    const facing = this.direction
+    const behind = GameDirectionMap[GameDirectionReverseMap[facing]]
     // moves piece can see
     const { moves } = this.piece;
+    // Remove remove behind pacman from view because he can't see behind him
+    delete moves[behind];
     // to hold possible moves
     const possibleMoves: GameBoardItemMoves = {};
 
     // logic variables
+    let ghostDir = null;
     let ghostSeen = false;
     let biscuitSeen = false;
     let pillSeen = false;
     let emptySpace = false;
     let DANGEROUS = false;
 
-    // for fleeing
-    let reversePiece = this.piece;
-    let reverseDirection = GameDirectionMap[this.direction];
-
+    // Check to see if Pac is DANGEROUS
+    if (this.pillTimer.timer > 0) {
+      DANGEROUS = true
+    }
     // Looking around
-    for (const num in moves) {
-      if (num) {
-        const move = moves[num];
+    for (const dir in moves) {
+      if (dir) {
+        const move = moves[dir];
         //Look for ghosts
-        let ghost = this.findItem(num, GameBoardItemType.GHOST);
+        let ghost = this.findItem(dir, GameBoardItemType.GHOST);
         if (ghost) {
           ghostSeen = true;
-          // Evade ghosts
-          // Logic goes here
+          ghostDir = dir;
+          // If DANGEROUS
+          if (DANGEROUS) {
+            // EAT AND GROW FAT
+            return { piece: move, direction: GameDirectionMap[dir] }
+          }
         }
         //Look for biscuits
-        let biscuit = this.findItem(num, GameBoardItemType.BISCUIT);
+        let biscuit = this.findItem(dir, GameBoardItemType.BISCUIT);
         if (biscuit) {
           biscuitSeen = true;
           // Add biscuit room to possible moves
-          possibleMoves[num] = move
+          possibleMoves[dir] = move
         }
         //Look for pill
-        let pill = this.findItem(num, GameBoardItemType.PILL);
+        let pill = this.findItem(dir, GameBoardItemType.PILL);
         if (pill) {
           pillSeen = true;
-          // Add pill room to possible moves
-          possibleMoves[num] = move
+          // Eat pill and become DANGEROUS
+          return { piece: move, direction: GameDirectionMap[dir] }
         }
         //If empty
-        let empty = this.findItem(num, GameBoardItemType.EMPTY);
+        let empty = this.findItem(dir, GameBoardItemType.EMPTY);
         if (empty) {
           emptySpace = true;
-          // Ignore
+          possibleMoves[dir] = move
         }
       }
     }
 
-    if (ghostSeen) {
-      console.log('GHOST DETECTED')
-      // Evasion Logic
-      // possibleMoves[reverseDirection] = reversePiece;
+    if (ghostSeen && ghostDir && !DANGEROUS) {
+      console.log(possibleMoves);
+      console.log('GHOST DETECTED: ' + ghostDir);
+      delete possibleMoves[ghostDir];
+      console.log(possibleMoves);
     }
 
     const nextMoves = Object.keys(possibleMoves);
