@@ -9,6 +9,8 @@ class Pacman extends Item implements GameBoardItem {
 
   score: number = 0;
 
+  running: boolean = false
+
   constructor(piece: GameBoardPiece, items: GameBoardItem[][], pillTimer: GameBoardItemTimer) {
     super(piece, items, pillTimer);
 
@@ -32,7 +34,12 @@ class Pacman extends Item implements GameBoardItem {
       this.desiredMove = KeyToGameDirection[e.key.toUpperCase()];
     }
     if (e.key.toUpperCase() === 'R') {
-      this.run();
+      if (this.running) {
+        this.running = false
+      }
+      else {
+        this.running = true
+      }
     }
   }
 
@@ -61,6 +68,15 @@ class Pacman extends Item implements GameBoardItem {
       const key = GameDirectionToKeys(this.direction);
       if (moves[key]) {
         move = { piece: moves[key], direction: this.direction };
+      }
+    }
+
+    // if PacMan is RUNNING
+    if (this.running) {
+      let timesRun = 0
+      if (timesRun < 100) {
+        move = this.decision()
+        timesRun++
       }
     }
 
@@ -101,20 +117,20 @@ class Pacman extends Item implements GameBoardItem {
   /**
    * Run the maze
    * 
-   * @method run
-   */
-  run(): void {
-    alert('PRESSED RUN');
+   * method run
+  //  */
+  // run(): void {
+  //   console.log('PRESSED RUN');
 
-    let timesRun = 0;
-    while (timesRun < 100) {
+  //   let timesRun = 0;
+  //   while (timesRun < 100) {
+  //     this.decision()
+  //     console.log(`Times Run: ${timesRun}`);
+  //     timesRun++;
+  //   }
 
+  // }
 
-      alert('Times Run: ' + timesRun);
-      timesRun++
-    }
-
-  }
   /**
    * Decide on move
    * @method decision
@@ -122,31 +138,44 @@ class Pacman extends Item implements GameBoardItem {
   decision() {
     // moves piece can see
     const { moves } = this.piece;
+    console.log(moves)
     // to hold possible moves
-    const possibleMoves = {}
+    const possibleMoves: GameBoardItemMoves = {};
 
     // logic variables
     let ghostSeen = false;
-    let pillSeen = false;
-    let fruitSeen = false;
-    let DANGEROUS = false;
+    const pillSeen = false;
+    const fruitSeen = false;
+    const DANGEROUS = false;
 
     // for fleeing
-    let reversePiece = this.piece
-    let reverseDirection = GameDirectionMap[this.direction]
+    const reversePiece = this.piece;
+    const reverseDirection = GameDirectionMap[this.direction];
 
-    // for move in moves
-    for (let move in moves) {
-      // if move exists
-      if (move) {
-        // direction from move list
-        const direction = moves[move]
-        // GHOST DETECTION
-        if (this.items[direction.y][direction.x].type === GameBoardItemType.GHOST) {
-          ghostSeen = true;
-        }
-      }
-    }
+    // // for move in moves
+    // for (const num in moves) {
+    //   // if move exists
+    //   if (num) {
+    //     // direction from move list
+    //     const move = moves[num];
+    //     // GHOST DETECTION
+    //     if (this.items[move.y][move.x].type === GameBoardItemType.GHOST) {
+    //       ghostSeen = true;
+    //       //flee if not dangerous
+    //       if (!DANGEROUS) {
+    //         possibleMoves[reverseDirection] = reversePiece;
+    //       }
+    //       //pursue if dangerous
+    //       //if(DANGEROUS) {
+    //       //pursuit code
+    //       //}
+    //     }
+    //   }
+    // }
+    const nextMoves = Object.keys(possibleMoves);
+    if (nextMoves.length < 1) return false;
+    const move = Math.floor(Math.random() * nextMoves.length);
+    return { piece: possibleMoves[nextMoves[move]], direction: GameDirectionMap[nextMoves[move]] }
   }
 }
 
