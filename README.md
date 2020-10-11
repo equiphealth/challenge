@@ -21,7 +21,7 @@ Currently pacman uses [A, S, W, D] keys for moving.
 - Do not alter the scoring rules
 - Be creative
 
-## Ian Bryant : Submission
+## Ian Bryant : Submission - PacMan RUN
 - PacMan R(eal)U(ltimate)N(avigation)
 - Press 'r' to start/stop PacMan RUNner
 - Will move 100 turns or until death, whichever comes first

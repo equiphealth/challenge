@@ -36,11 +36,14 @@ class Pacman extends Item implements GameBoardItem {
       this.desiredMove = KeyToGameDirection[e.key.toUpperCase()];
     }
     if (e.key.toUpperCase() === 'R') {
+      // if running, deactivate
       if (this.running) {
         this.running = false
       }
+      // activate and reset counter
       else {
         this.running = true
+        this.timesRun = 0
       }
     }
   }
@@ -153,7 +156,13 @@ class Pacman extends Item implements GameBoardItem {
     // for fleeing
     const reversePiece = this.piece;
     const reverseDirection = GameDirectionMap[this.direction];
+    for (const num in moves) {
+      if (num) {
+        const move = moves[num]
 
+        possibleMoves[num] = move
+      }
+    }
     // // for move in moves
     // for (const num in moves) {
     //   // if move exists
@@ -175,6 +184,7 @@ class Pacman extends Item implements GameBoardItem {
     //   }
     // }
     const nextMoves = Object.keys(possibleMoves);
+    console.log(nextMoves)
     if (nextMoves.length < 1) return false;
     const move = Math.floor(Math.random() * nextMoves.length);
     return { piece: possibleMoves[nextMoves[move]], direction: GameDirectionMap[nextMoves[move]] }
