@@ -82,6 +82,8 @@ class Pacman extends Item implements GameBoardItem {
       if (this.timesRun < 100) {
         move = this.pathFind();
       } else if (this.timesRun >= 100) {
+        this.running = false
+        this.timesRun = 0
         alert('100 iterations!')
       }
       this.timesRun++;
