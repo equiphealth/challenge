@@ -4,8 +4,6 @@ Typescript & React implementation of the popular arcade game Pacman.
 
 Currently pacman uses [A, S, W, D] keys for moving.
 
-**Suggested time:** 1 hour.
-
 ## Tasks
 
 - Create a way to automate Pacman's moves in `src/lib/game/Pacman.ts` such that Pacman can achieve the highest score.
